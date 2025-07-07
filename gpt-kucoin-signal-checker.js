@@ -62,7 +62,7 @@ async function getWebSocketToken() {
           parsed.data &&
           parsed.topic.includes(`/market/candles:${SYMBOL}_${INTERVAL}`)
         ) {
-          const [time, open, close, high, low, vol, turnover] = parsed.data;
+          const { time, open, close, high, low, vol, turnover } = parsed.data;
           candles.push({ open, close, high, low });
           if (candles.length > 100) candles.shift();
 
