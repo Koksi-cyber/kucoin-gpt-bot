@@ -62,7 +62,8 @@ async function getWebSocketToken() {
           parsed.data &&
           parsed.topic.includes(`/market/candles:${SYMBOL}_${INTERVAL}`)
         ) {
-          const { time, open, close, high, low, vol, turnover } = parsed.data;
+          console.log("🔍 Raw candle data:", parsed.data);
+          const { c: close, o: open, h: high, l: low } = parsed.data || {};
           candles.push({ open, close, high, low });
           if (candles.length > 100) candles.shift();
 
@@ -84,7 +85,7 @@ What should I do? Hold, adjust grid, pause, or exit?
 `;
 
           const response = await openai.chat.completions.create({
-            model: "gpt-4",
+            model: "gpt-4-turbo",
             messages: [{ role: "user", content: prompt }],
           });
 
