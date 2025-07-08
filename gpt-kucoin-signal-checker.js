@@ -1,4 +1,4 @@
-// ✅ KuCoin GPT Signal Bot with Authenticated WebSocket
+// ✅ KuCoin GPT Signal Bot with Authenticated WebSocket - Fixed Version
 require("dotenv").config();
 const axios = require("axios");
 const crypto = require("crypto");
@@ -57,13 +57,11 @@ async function getWebSocketToken() {
     ws.on("message", async (data) => {
       try {
         const parsed = JSON.parse(data);
-        if (
-          parsed.topic &&
-          parsed.data &&
-          parsed.topic.includes(`/market/candles:${SYMBOL}_${INTERVAL}`)
-        ) {
+
+        if (parsed.data?.candles) {
+          const [time, open, close, high, low, volume, turnover] = parsed.data.candles;
           console.log("🔍 Raw candle data:", parsed.data);
-          const { c: close, o: open, h: high, l: low } = parsed.data || {};
+
           candles.push({ open, close, high, low });
           if (candles.length > 100) candles.shift();
 
@@ -85,7 +83,7 @@ What should I do? Hold, adjust grid, pause, or exit?
 `;
 
           const response = await openai.chat.completions.create({
-            model: "gpt-4-turbo",
+            model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: prompt }],
           });
 
